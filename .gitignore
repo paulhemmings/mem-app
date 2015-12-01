@@ -17,3 +17,7 @@ build/
 gradle/
 gradlew
 gradlew.bat
+
+# IDE
+.idea/
+mem-app.iml

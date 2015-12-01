@@ -56,7 +56,7 @@ public class Controller extends HttpServlet {
         this.response = resp;
         this.requestVerb = httpVerb.POST;
         this.runningLocally = request.getServerName().equalsIgnoreCase("localhost");
-        this.facebookProvider = FacebookProviderFactory.buildProvider();
+        this.facebookProvider = FacebookProviderFactory.buildProvider(this.runningLocally);
 
         this.routeRequest();
     }
@@ -70,7 +70,7 @@ public class Controller extends HttpServlet {
         this.response = resp;
         this.requestVerb = httpVerb.GET;
         this.runningLocally = request.getServerName().equalsIgnoreCase("localhost");
-        this.facebookProvider = FacebookProviderFactory.buildProvider();
+        this.facebookProvider = FacebookProviderFactory.buildProvider(this.runningLocally);
 
         this.routeRequest();
     }
