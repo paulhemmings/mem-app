@@ -1,0 +1,73 @@
+<script type="text/javascript">
+
+	function listFriends(){
+		$.ajax({
+			type: 'POST',
+  			url: 'controller',
+ 			data:{
+  				action: 'friends',
+  				method: 'list'
+  			},
+ 			success: function(data) {
+    			$('#selectedFriendsNamesContainer').html(data);
+  			}
+		});		
+	}
+	
+	function addStory(){
+		var friendsArray = $('.friendSelector').map( function(){ if(this.checked) return this.value; });			
+		$.ajax({
+			type: 'POST', 
+			url: 'controller',
+  			data:{
+  				action: 'story',
+  				method: 'store',
+  				storyText: $('#storyContent').val(),
+  				friendList: friendsArray.get().join(',')
+  			},
+  			success: function(data) {
+   				$('#addStoryContainer').html(data);
+  			}
+		});	
+	}
+	
+	function listStories(){
+		$.ajax({
+			type: 'POST',
+  			url: 'controller',
+  			data:{
+  				action: 'story',
+  				method: 'list'
+  			},
+  			success: function(data) {
+    			$('#listStoryContainer').html(data);
+  			}
+		});	
+	}
+
+	$(function(){
+	
+		// render the tabs
+		
+		$( "#tabs" ).tabs();
+		
+		// populate content
+		
+		listFriends();
+		listStories();
+		 		
+		// actions
+	
+		$('#loadAddStory').click(function(){
+			addStory();
+		});
+		
+		$('.friendSelector').live('click',function(){
+			// get friend array
+			//var friendsArray = $('.friendSelector').filter(':checked').get().map(function(){ return $(this).attr('data-name'); });
+			//var selectedList = friendsArray.get().join(',');
+			//$("#selectedFriendsNamesContainer").html(selectedList);
+		});		
+		
+	});
+</script>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    	
+    <servlet>
+        <servlet-name>HomeController</servlet-name>
+        <servlet-class>
+            com.razor.memories.controllers.HomeController
+        </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HomeController</servlet-name>
+        <url-pattern>/memories/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>StoryController</servlet-name>
+        <servlet-class>
+            com.razor.memories.controllers.StoryController
+        </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>StoryController</servlet-name>
+        <url-pattern>/story/*</url-pattern>
+    </servlet-mapping>    
+    
+    <servlet>
+        <servlet-name>FriendController</servlet-name>
+        <servlet-class>
+            com.razor.memories.controllers.FriendController
+        </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FriendController</servlet-name>
+        <url-pattern>/friend/*</url-pattern>
+    </servlet-mapping>    
+    
+    <servlet>
+        <servlet-name>CommentController</servlet-name>
+        <servlet-class>
+            com.razor.memories.controllers.CommentController
+        </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CommentController</servlet-name>
+        <url-pattern>/comment/*</url-pattern>
+    </servlet-mapping>    
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+</web-app>

@@ -1,0 +1,26 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>
+<div>
+	<input id="loadAddStory" type="button" value="load add story"/>
+	<textarea width="100" height="100" id="storyContent"></textarea>
+	<div id="addStoryContainer"></div>	
+</div>
+<script type="text/javascript">
+	$(function(){
+		$('#loadAddStory').click(function(){
+		
+			var friendsArray = $('.friendSelector').map( function(){ if(this.checked) return this.value; });
+			
+			$.ajax({
+  				url: 'addStory',
+  				data:{
+  					story: $('#storyContent').val(),
+  					friends: friendsArray.get().join(',')
+  				},
+  				success: function(data) {
+    				$('#addStoryContainer').html(data);
+    				alert('Load was performed.');
+  				}
+			});
+		});
+	});
+</script>

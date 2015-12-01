@@ -1,0 +1,3 @@
+<center>
+    Footer
+</center>
