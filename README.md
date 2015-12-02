@@ -1,24 +1,27 @@
 # mem-app
 
-#### Install Tomcat locally
-http://tomcat.apache.org/download-70.cgi
+Work in progress. This is an existing Facebook app I am migrating from  Google App Engine to AWS.
 
-download the zip
+##### steps  
 
-copy to Tools folder
+* Migrate from Eclipse to Gradle for dependency management - done
+* Replace Google App Engine with Tomcat - done
+- Replace Big Table with MongoDB
+- Research deploying a java / tomcat / mongoDB app to EC2
 
-extract the zip
+##### research
 
-create a symlink between the location and Library so we can swap and change later on
+* https://s3.amazonaws.com/quickstart-reference/mongodb/latest/doc/MongoDB_on_the_AWS_Cloud.pdf
+- https://plugins.gradle.org/search?term=tomcat
+- https://boxfuse.com/
+
+#### Install, build, run.
 
 ````
-$ sudo ln -s ~/Tools/apache-tomcat-7.0.59 /Library/Tomcat
-
-$ sudo chown -R [user] /Library/Tomcat
-
-$ sudo chmod +x /Library/Tomcat/bin/*.sh
-
-$ /Library/Tomcat/bin/startup.sh
-
-$  /Library/Tomcat/bin/shutdown.sh
+$ git clone https://github.com/paulhemmings/mem-app.git
+$ cd mem-app/
+$ ls
+$ gradle wrapper
+$ ./gradlew clean build
+$ ./gradlew start
 ````
