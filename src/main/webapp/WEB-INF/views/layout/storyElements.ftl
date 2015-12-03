@@ -79,9 +79,11 @@ Razor.Story =
 			type: 'POST',
 			url: '/story/store',
 			data:{
-				storyId: storyId,
-				storyText: storyText,
-				friendList: friendList
+                storyDTO: JSON.stringify({
+                    storyId: storyId,
+                    storyText: storyText,
+                    friendList: friendList
+				})
 			},
 			success: function(data) {
 				callback(data);				

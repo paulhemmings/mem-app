@@ -29,7 +29,7 @@ public class Controller extends HttpServlet {
     protected Configuration configuration;
     protected HttpServletRequest request;
     protected HttpServletResponse response;
-    protected enum httpVerb { GET, POST };
+    protected enum httpVerb { GET, POST }
     protected httpVerb requestVerb;
     protected IFacebookProvider facebookProvider;
     protected FacebookClient facebookClient;

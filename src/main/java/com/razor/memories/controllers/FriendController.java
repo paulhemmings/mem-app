@@ -23,11 +23,11 @@ public class FriendController extends Controller {
 	    	List<Map<String,Object>> friendListMap = null;
 
 	    	if(this.runningLocally){
-	    		friendListMap = FriendMap.buildFromTestList(this.facebookSR.getUser_id());
+	    		friendListMap = new FriendMap().buildFromTestList(this.facebookSR.getUser_id());
 	    	}else{
 	    		Connection<User> myFriends = facebookClient.fetchConnection("me/friends", User.class);
 	    		List<User> friendList = myFriends.getData();
-	    		friendListMap = FriendMap.buildFromUserList(friendList);
+	    		friendListMap = new FriendMap().buildFromUserList(friendList);
 	    	}
 
 	        Map<String, Object> root = new HashMap<String, Object>();

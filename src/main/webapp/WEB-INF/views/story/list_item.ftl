@@ -1,4 +1,4 @@
-<div id="${storyId}" class="existingStory storyBlock">
+<div id="${id}" class="existingStory storyBlock">
 	<div class="storyText" contenteditable="true">
 		${storyText}
 	</div>
@@ -19,7 +19,7 @@
 		
 		<#list comments as comment>
 			<li id="${comment["commentId"]}" class="storyDiscussionItem">
-				<img class="commentImage" src="https://graph.facebook.com/${comment["creatorId"]}/picture" />
+				<img class="commentImage" src="https://graph.facebook.com/${comment["friendId"]}/picture" />
 				<div class="storyDiscussionItemText">${comment["commentText"]}</div>
 				<div class="storyDiscussionItemDelete">[x]</div>
 			</li>

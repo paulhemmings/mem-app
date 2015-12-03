@@ -1,3 +1,6 @@
+import com.bmuschko.gradle.tomcat.tasks.TomcatRunWar
+import com.bmuschko.gradle.tomcat.tasks.TomcatStop
+
 apply plugin: 'idea'
 apply plugin: 'java'
 apply plugin: 'war'
@@ -59,7 +62,8 @@ dependencies {
             [group: 'org.aeonbits.owner', name: 'owner', version: '1.0.6'],
             [group: 'org.freemarker', name: 'freemarker', version: '2.3.20'],
             [group: 'commons-codec', name: 'commons-codec', version: '1.9'],
-            [group: 'com.restfb', name: 'restfb', version: '1.17.0']
+            [group: 'com.restfb', name: 'restfb', version: '1.17.0'],
+            [group: 'com.google.code.gson', name: 'gson', version: '2.3.1']
 
     )
 
@@ -108,7 +112,7 @@ war {
  * https://github.com/bmuschko/gradle-tomcat-plugin
  * */
 
-task start(type: com.bmuschko.gradle.tomcat.tasks.TomcatRunWar) {
+task start(type: TomcatRunWar) {
 //    group "Application"
 //    description "Starts the Application"
     contextPath = "/"
@@ -121,7 +125,7 @@ task start(type: com.bmuschko.gradle.tomcat.tasks.TomcatRunWar) {
  * Stop the Tomcat instance
  */
 
-task stop(type: com.bmuschko.gradle.tomcat.tasks.TomcatStop) {
+task stop(type: TomcatStop) {
     group "Application"
     description "Stops the Application"
 //    stopPort = 8084

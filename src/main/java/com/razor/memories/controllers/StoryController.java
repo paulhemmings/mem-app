@@ -9,14 +9,18 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 
+import com.google.gson.Gson;
 import com.razor.memories.builders.StoryBuilder;
+import com.razor.memories.factories.StoryHandlerFactory;
 import com.razor.memories.handlers.StoryHandler;
 import com.razor.memories.models.RequestResponse;
 import com.razor.memories.models.Story;
+import com.razor.memories.models.StoryDTO;
 import com.razor.memories.viewmodels.CommentMap;
 import com.razor.memories.viewmodels.FriendMap;
 import com.razor.memories.viewmodels.StoryMap;
 import com.razor.memories.wrappers.TemplateHelper;
+import spark.utils.StringUtils;
 
 @SuppressWarnings("serial")
 public class StoryController extends Controller {
@@ -32,22 +36,15 @@ public class StoryController extends Controller {
 
     	long creatorId = this.facebookSR.getUser_id();
     	String storyId = request.getParameter("storyId");
-    	StoryHandler handler = new StoryHandler();
+
+    	StoryHandler handler = new StoryHandlerFactory().buildStoryHandler();
     	Story story = handler.getStory(storyId);
 
-    	if(story==null || story.getCreatorId() != creatorId){
+    	if(story==null || story.getCreatorId().equals(String.valueOf(creatorId))) {
     		return;
     	}
 
-		Map<String, Object> root = new HashMap<String, Object>();
-		try{
-			root.put("storyId",story.getStoryKey());
-			root.put("storyText",story.getText());
-			root.put("sharedWithCount", story.getAttachedFriends().size());
-			root.put("friends", FriendMap.build(story.getAttachedFriends()));
-			root.put("comments",CommentMap.build(story.getAttachedComments()));
-		}catch(Exception ignore){}
-
+		Map<String, Object> root = new StoryMap().build(story);
 		TemplateHelper.callTemplate(configuration, response, ctrlName + "/list_item.ftl",root);
     }
 
@@ -60,36 +57,25 @@ public class StoryController extends Controller {
     {
     	RequestResponse requestResponse = new RequestResponse();
     	try{
+			String creatorId = String.valueOf(this.facebookSR.getUser_id());
+			StoryDTO storyDTO = new Gson().fromJson(request.getParameter("storyDTO"), StoryDTO.class);
 
-			StoryBuilder builder = new StoryBuilder();
-			long creatorId = this.facebookSR.getUser_id();
-			String friendList = request.getParameter("friendList");
-			String storyText = request.getParameter("storyText");
-			String storyId = request.getParameter("storyId");
+			StoryHandler handler = new StoryHandlerFactory().buildStoryHandler();
+			Story existingStory = handler.getStory(storyDTO.storyId);
 
-			StoryHandler handler = new StoryHandler();
-			Story existingStory = handler.getStory(storyId);
-
-			if(existingStory!=null && existingStory.getCreatorId() != creatorId){
-
+			if (existingStory!=null && existingStory.getCreatorId().equals(creatorId)) {
 				requestResponse.setMessage("you are not the owner of this story.");
-
-			}else if(storyText.trim().length()==0){
-
+			} else if (StringUtils.isEmpty(storyDTO.storyText)) {
 				requestResponse.setMessage("the story is empty.");
-
-			}else{
-
-				Story recordedStory = builder.build(existingStory, creatorId, friendList, storyText);
-				String storeMessage = handler.upsertRecordedStory(recordedStory);
-				requestResponse.setMessage(storeMessage);
+			} else {
+				Story story = new StoryBuilder().build(storyDTO);
+				story.setCreatorId(creatorId);
+				if (existingStory != null) {
+					story.setId(existingStory.getId());
+				}
+				handler.upsertRecordedStory(story);
+				requestResponse.setMessage("stored");
 			}
-			/*
-	        Map<String, Object> root = new HashMap<String, Object>();
-	        root.put("message",message);
-	        TemplateHelper.callTemplate(configuration,response, ctrlName + "/stored.ftl",root);
-	        */
-
     	}catch(Exception ex){
     		requestResponse.setMessage("listShared failed with: " + ex.getMessage());
     	}
@@ -110,13 +96,13 @@ public class StoryController extends Controller {
 
 			long creatorId = this.facebookSR.getUser_id();
 
-			StoryHandler handler = new StoryHandler();
-			List<Story> stories = handler.listStoriesByCreatorId(creatorId);
+			StoryHandler handler = new StoryHandlerFactory().buildStoryHandler();
+			List<Story> stories = handler.listStoriesByCreatorId(String.valueOf(creatorId));
 
 			Writer writer = new StringWriter();
 			for(Story story:stories){
-				Map<String, Object> root = StoryMap.build(story);
-				TemplateHelper.callTemplate(configuration, writer, ctrlName + "/list_item.ftl",root);
+				Map<String, Object> root = new StoryMap().build(story);
+				TemplateHelper.callTemplate(configuration, writer, ctrlName + "/list_item.ftl", root);
 			}
 
 	        Map<String, Object> root = new HashMap<String, Object>();
@@ -143,14 +129,14 @@ public class StoryController extends Controller {
     	try{
 	    	long creatorId = this.facebookSR.getUser_id();
 
-			StoryHandler handler = new StoryHandler();
-			List<Story> stories = handler.listSharedStories(creatorId);
+			StoryHandler handler = new StoryHandlerFactory().buildStoryHandler();
+			List<Story> stories = handler.listSharedStories(String.valueOf(creatorId));
 			requestResponse.setRequestLogInfo(String.format("%d returned %d stories", creatorId, stories.size()));
 
 	        Map<String, Object> root = new HashMap<String, Object>();
 	        root.put("storyCount", stories.size());
 	        root.put("userId", creatorId);
-	        root.put("sharedStories",StoryMap.build(stories));
+	        root.put("sharedStories", new StoryMap().build(stories));
 
 	        String responseHtml = TemplateHelper.callTemplate(configuration, ctrlName + "/listShared.ftl",root);
 	        requestResponse.setResponseHtml(responseHtml);

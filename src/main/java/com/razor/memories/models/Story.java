@@ -1,67 +1,69 @@
 package com.razor.memories.models;
 
-import java.io.Serializable;
+import spark.utils.StringUtils;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-public class Story implements Serializable {
-	
-	private static final long serialVersionUID = 6899284258473985914L;
+/*
+ * The Story document.
+ */
 
-	private String key;
+public class Story extends MongoModel {
+
+	private String creatorId;
 	private String text;
-	private Date dateOccurred;
-	private long creatorId;
 	private int creatorPrivacyLevel;
 	private List<StoryFriend> attachedFriends;
 	private List<StoryComment> attachedComments;
-	private Date dateCreated;
-	private boolean isDeleted;
-	
-	/**
-	 * Empty Constructor
-	 */
-	
-	public Story(){		
-		this.attachedFriends = new ArrayList<StoryFriend>();
-		this.attachedComments = new ArrayList<StoryComment>();
-		this.isDeleted = false;
-	}
-	
-	/**
-	 * Constructor
-	 * @param text
-	 * @param creatorId
-	 * @param creatorPrivacyLevel
-	 * @param attachedFriends
-	 * @param dateCreated
-	 */
 
-	public Story(String text, int creatorId, int creatorPrivacyLevel,List<StoryFriend> attachedFriends, Date dateCreated) {
-		super();
-		this.text = text;
-		this.creatorId = creatorId;
-		this.creatorPrivacyLevel = creatorPrivacyLevel;
-		this.attachedFriends = attachedFriends;
-		this.dateCreated = dateCreated;
-		this.isDeleted = false;
+	public StoryFriend addFriend(StoryFriend storyFriend) {
+		if (attachedFriends == null) {
+			this.attachedFriends = new ArrayList<>();
+		}
+		if (StringUtils.isEmpty(storyFriend.getId())) {
+			storyFriend.setId(storyFriend.newId());
+		}
+		this.attachedFriends.add(storyFriend);
+		return storyFriend;
 	}
 
-	public String getText() {
-		return text==null?"":text;
+	public Story removeFriend(StoryFriend storyFriend) {
+		this.attachedFriends.remove(storyFriend);
+		return this;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public StoryComment addComment(StoryComment storyComment) {
+		if (attachedComments == null) {
+			this.attachedComments = new ArrayList<>();
+		}
+		if (StringUtils.isEmpty(storyComment.getId())) {
+			storyComment.setId(storyComment.newId());
+		}
+		this.attachedComments.add(storyComment);
+		return storyComment;
 	}
 
-	public long getCreatorId() {
+	public Story removeComment(StoryComment comment) {
+		this.attachedComments.remove(comment);
+		return this;
+	}
+
+	public String getCreatorId() {
 		return creatorId;
 	}
 
-	public void setCreatorId(long creatorId) {
+	public void setCreatorId(String creatorId) {
 		this.creatorId = creatorId;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public Story setText(String text) {
+		this.text = text;
+		return this;
 	}
 
 	public int getCreatorPrivacyLevel() {
@@ -72,53 +74,56 @@ public class Story implements Serializable {
 		this.creatorPrivacyLevel = creatorPrivacyLevel;
 	}
 
-	public Date getDateCreated() {
-		return dateCreated;
-	}
-
-	public void setDateCreated(Date dateCreated) {
-		this.dateCreated = dateCreated;
-	}
-
 	public List<StoryFriend> getAttachedFriends() {
 		return attachedFriends;
-	}
-
-	public void setAttachedFriends(List<StoryFriend> attachedFriends) {
-		this.attachedFriends = attachedFriends;
-	}
-
-	public String getStoryKey() {
-		return key;
-	}
-	
-	public void setStoryKey(String key) {
-		this.key = key;
-	}
-
-	public Date getDateOccured() {
-		return dateOccurred;
-	}
-
-	public void setDateOccured(Date dateOccured) {
-		this.dateOccurred = dateOccured;
 	}
 
 	public List<StoryComment> getAttachedComments() {
 		return attachedComments;
 	}
 
-	public void setAttachedComments(List<StoryComment> attachedComments) {
-		this.attachedComments = attachedComments;
+	/*
+	 * Friends associated with this story
+	 */
+
+	public static class StoryFriend extends MongoModel {
+		private String friendId;
+
+		public String getFriendId() {
+			return friendId;
+		}
+
+		public StoryFriend setFriendId(String friendId) {
+			this.friendId = friendId;
+			return this;
+		}
 	}
 
-	public boolean isDeleted() {
-		return isDeleted;
-	}
+	/*
+	 * Comments associated with this story
+	 */
 
-	public void setDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
+	public static class StoryComment extends MongoModel {
+		private String friendId;
+		private String comment;
 
+		public String getFriendId() {
+			return friendId;
+		}
+
+		public StoryComment setFriendId(String friendId) {
+			this.friendId = friendId;
+			return this;
+		}
+
+		public String getComment() {
+			return comment;
+		}
+
+		public StoryComment setComment(String comment) {
+			this.comment = comment;
+			return this;
+		}
+	}
 
 }
