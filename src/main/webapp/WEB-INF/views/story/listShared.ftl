@@ -1,5 +1,5 @@
 <#list sharedStories as sharedStory>
-	<div id="${sharedStory["storyId"]}" class="existingStory storyBlock">
+	<div id="${sharedStory["id"]}" class="existingStory storyBlock">
 		<div class="storyText">
 			<div class="sharedStoryCreator" style="display:inline;padding-right:10px;float:left;">
 				<img class="friendImage" src="https://graph.facebook.com/${sharedStory["creatorId"]}/picture" />
@@ -16,8 +16,8 @@
 		<ul class="storyDiscussionList">
 			
 			<#list sharedStory["comments"] as comment>
-				<li id="${comment["commentId"]}" class="storyDiscussionItem">
-					<img class="commentImage" src="https://graph.facebook.com/${comment["creatorId"]}/picture" />
+				<li id="${comment["id"]}" class="storyDiscussionItem">
+					<img class="commentImage" src="https://graph.facebook.com/${comment["friendId"]}/picture" />
 					<div class="storyDiscussionItemText">${comment["commentText"]}</div>
 					<div class="storyDiscussionItemDelete">[x]</div>
 				</li>

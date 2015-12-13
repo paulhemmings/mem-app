@@ -26,8 +26,8 @@ public class StoryHandler {
 	 * @return
 	 */
 
-	public StoryHandler initialize(MongoClient client, String mongoDatabase) {
-		this.provider = new ModelProviderFactory<Story>().buildProvider(ModelProviderFactory.ORM.JONGO, client, mongoDatabase, COLLECTION_NAME, Story.class);
+	public StoryHandler initialize(String ormVersion, MongoClient client, String mongoDatabase) throws Exception {
+		this.provider = new ModelProviderFactory<Story>().buildProvider(ormVersion, client, mongoDatabase, COLLECTION_NAME, Story.class);
 		return this;
 	}
 	
@@ -39,7 +39,7 @@ public class StoryHandler {
 	 */
 	
 	public List<Story> listSharedStories(String fbId) throws Exception{
-		return this.provider.find("{ attachedFriends : { friendId: " + fbId + " }");
+		return this.provider.find("{\"attachedFriends\":{\"$elemMatch\":{\"friendId\":'" + fbId + "'} } }");
 	}
 		
 	/**

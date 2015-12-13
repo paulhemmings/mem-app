@@ -24,7 +24,6 @@ public class CommentMap {
         Map<String, Object> root = new HashMap<String, Object>();
 		root.put("id", storyComment.getId());
     	root.put("friendId",storyComment.getFriendId());
-    	root.put("commentId",storyComment.getId());
     	root.put("commentText",storyComment.getComment());
         return root;
 	}

@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 
 import com.google.gson.Gson;
 import com.razor.memories.builders.StoryBuilder;
+import com.razor.memories.factories.ModelProviderFactory;
 import com.razor.memories.factories.StoryHandlerFactory;
 import com.razor.memories.handlers.StoryHandler;
 import com.razor.memories.models.RequestResponse;
@@ -26,6 +27,20 @@ import spark.utils.StringUtils;
 public class StoryController extends Controller {
 
     public static final String ctrlName = "/story";
+	private StoryHandler storyHandler = null;
+
+	public void init() {
+		super.init();
+		try {
+			this.storyHandler = new StoryHandlerFactory().buildStoryHandler(ModelProviderFactory.ORM.JONGO);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public StoryHandler getStoryHandler() {
+		return this.storyHandler;
+	}
 
     /**
      * get an existing story
@@ -36,9 +51,7 @@ public class StoryController extends Controller {
 
     	long creatorId = this.facebookSR.getUser_id();
     	String storyId = request.getParameter("storyId");
-
-    	StoryHandler handler = new StoryHandlerFactory().buildStoryHandler();
-    	Story story = handler.getStory(storyId);
+    	Story story = this.getStoryHandler().getStory(storyId);
 
     	if(story==null || story.getCreatorId().equals(String.valueOf(creatorId))) {
     		return;
@@ -59,9 +72,7 @@ public class StoryController extends Controller {
     	try{
 			String creatorId = String.valueOf(this.facebookSR.getUser_id());
 			StoryDTO storyDTO = new Gson().fromJson(request.getParameter("storyDTO"), StoryDTO.class);
-
-			StoryHandler handler = new StoryHandlerFactory().buildStoryHandler();
-			Story existingStory = handler.getStory(storyDTO.storyId);
+			Story existingStory = this.getStoryHandler().getStory(storyDTO.storyId);
 
 			if (existingStory!=null && existingStory.getCreatorId().equals(creatorId)) {
 				requestResponse.setMessage("you are not the owner of this story.");
@@ -73,7 +84,7 @@ public class StoryController extends Controller {
 				if (existingStory != null) {
 					story.setId(existingStory.getId());
 				}
-				handler.upsertRecordedStory(story);
+				this.getStoryHandler().upsertRecordedStory(story);
 				requestResponse.setMessage("stored");
 			}
     	}catch(Exception ex){
@@ -95,9 +106,7 @@ public class StoryController extends Controller {
     	try{
 
 			long creatorId = this.facebookSR.getUser_id();
-
-			StoryHandler handler = new StoryHandlerFactory().buildStoryHandler();
-			List<Story> stories = handler.listStoriesByCreatorId(String.valueOf(creatorId));
+			List<Story> stories = this.getStoryHandler().listStoriesByCreatorId(String.valueOf(creatorId));
 
 			Writer writer = new StringWriter();
 			for(Story story:stories){
@@ -128,9 +137,7 @@ public class StoryController extends Controller {
     	RequestResponse requestResponse = new RequestResponse();
     	try{
 	    	long creatorId = this.facebookSR.getUser_id();
-
-			StoryHandler handler = new StoryHandlerFactory().buildStoryHandler();
-			List<Story> stories = handler.listSharedStories(String.valueOf(creatorId));
+			List<Story> stories = this.getStoryHandler().listSharedStories(String.valueOf(creatorId));
 			requestResponse.setRequestLogInfo(String.format("%d returned %d stories", creatorId, stories.size()));
 
 	        Map<String, Object> root = new HashMap<String, Object>();

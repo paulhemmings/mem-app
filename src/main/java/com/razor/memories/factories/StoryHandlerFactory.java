@@ -10,9 +10,9 @@ import org.aeonbits.owner.ConfigFactory;
  */
 public class StoryHandlerFactory {
 
-    public StoryHandler buildStoryHandler() {
+    public StoryHandler buildStoryHandler(String ormVersion) throws Exception {
         PersistenceConfig persistenceConfig = buildPersistenceConfig();
-        return new StoryHandler().initialize(buildMongoClient(persistenceConfig.mongoHost()), persistenceConfig.mongoDatabase());
+        return new StoryHandler().initialize(ormVersion, buildMongoClient(persistenceConfig.mongoHost()), persistenceConfig.mongoDatabase());
     }
 
     protected PersistenceConfig buildPersistenceConfig() {

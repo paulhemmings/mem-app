@@ -6,7 +6,7 @@ Work in progress. This is an old Facebook app I wrote a few years back, that I h
 
 * Migrate from Eclipse to Gradle for dependency management - done
 * Replace Google App Engine with Tomcat - done
-- Replace Big Table with MongoDB
+- Replace Big Table with MongoDB - done
 - Research deploying a java / tomcat / mongoDB app to AWS
 
 ##### research

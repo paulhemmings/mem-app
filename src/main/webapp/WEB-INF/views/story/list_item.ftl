@@ -18,7 +18,7 @@
 	<ul class="storyDiscussionList">
 		
 		<#list comments as comment>
-			<li id="${comment["commentId"]}" class="storyDiscussionItem">
+			<li id="${comment["id"]}" class="storyDiscussionItem">
 				<img class="commentImage" src="https://graph.facebook.com/${comment["friendId"]}/picture" />
 				<div class="storyDiscussionItemText">${comment["commentText"]}</div>
 				<div class="storyDiscussionItemDelete">[x]</div>

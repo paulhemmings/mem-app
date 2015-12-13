@@ -1,11 +1,13 @@
 package com.razor.memories.controllers;
 
+import com.razor.memories.factories.ModelProviderFactory;
 import com.razor.memories.factories.StoryHandlerFactory;
 import com.razor.memories.handlers.StoryHandler;
 import com.razor.memories.models.RequestResponse;
 import com.razor.memories.models.Story;
 import com.razor.memories.models.Story.StoryComment;
 import com.razor.memories.models.Story.StoryFriend;
+import com.razor.memories.providers.mongo.MongoProvider;
 import com.razor.memories.viewmodels.CommentMap;
 import com.razor.memories.wrappers.TemplateHelper;
 import spark.utils.StringUtils;
@@ -18,6 +20,20 @@ import java.util.Map;
 public class CommentController extends Controller {
 
 	public static final String ctrlName = "/comment";
+	private StoryHandler storyHandler = null;
+
+	public void init() {
+		super.init();
+		try {
+			this.storyHandler = new StoryHandlerFactory().buildStoryHandler(ModelProviderFactory.ORM.MONGO);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public StoryHandler getStoryHandler() {
+		return this.storyHandler;
+	}
 
 	/**
 	 * Store a comment
@@ -27,7 +43,6 @@ public class CommentController extends Controller {
 	public void store() throws Exception{
 
 		RequestResponse requestResponse = new RequestResponse();
-		StoryHandler storyHandler = new StoryHandlerFactory().buildStoryHandler();
 
 		// get parameters
 
@@ -46,7 +61,7 @@ public class CommentController extends Controller {
 		}
 
 		boolean creatorIsSharedFriendOfStory = false;
-		Story story = storyHandler.getStory(storyId);
+		Story story = this.getStoryHandler().getStory(storyId);
 
 		if(story==null){
 			requestResponse.setMessage("no story with that ID exists");
@@ -68,7 +83,7 @@ public class CommentController extends Controller {
 
 		if (requestResponse.isSuccess()) {
 			// store comment
-			StoryComment storyComment = storyHandler.addComment(storyId, String.valueOf(creatorId), commentText);
+			StoryComment storyComment = this.getStoryHandler().addComment(storyId, String.valueOf(creatorId), commentText);
 
 			// build html
 
@@ -91,7 +106,6 @@ public class CommentController extends Controller {
 	public void delete() throws IOException{
 
 		RequestResponse requestResponse = new RequestResponse();
-		StoryHandler storyHandler = new StoryHandlerFactory().buildStoryHandler();
 
 		// get parameters
 
@@ -108,7 +122,7 @@ public class CommentController extends Controller {
 		// implement action
 
 		if (requestResponse.isSuccess()) {
-			storyHandler.removeComment(storyId, String.valueOf(creatorId), commentId);
+			this.getStoryHandler().removeComment(storyId, String.valueOf(creatorId), commentId);
 		}
 
 		// return response

@@ -92,7 +92,7 @@
 						if(exists==0){
 							$(this).clone().appendTo(editingFriendList).fadeIn(function () {
 								$(this).addClass("attached");
-								$(this).css({display:inline});
+								$(this).css({display:"inline"});
 							});
 						}
 					}
